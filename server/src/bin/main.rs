@@ -1,18 +1,19 @@
-struct CustomSmartPointer {
-  data: String,
+fn main() {}
+use std::rc::Rc;
+use std::cell::RefCell;
+use List::{Cons, Nil};
+
+#[derive(Debug)]
+enum List {
+    Cons(i32, RefCell<Rc<List>>),
+    Nil,
 }
 
-impl Drop for CustomSmartPointer {
-  fn drop(&mut self) {
-    println!("Dropping CustomSmartPointer with data `{}`!", self.data);
-  }
-}
-
-fn main () {
-  let c = CustomSmartPointer { data: String::from("my stuff") };
-  println!("CustomSmartPointers created.");
-  drop(c);
-
-  println!("CustomSmartPointers dropped before the end of main.");
-  // let d = CustomSmartPointer { data: String::from("other stuff") };
+impl List {
+    fn tail(&self) -> Option<&RefCell<Rc<List>>> {
+        match *self {
+            Cons(_, ref item) => Some(item),
+            Nil => None,
+        }
+    }
 }
